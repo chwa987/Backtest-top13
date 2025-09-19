@@ -1,8 +1,11 @@
+import os
+os.environ["WATCHDOG_DISABLE"] = "true"
+
 import streamlit as st
+import yfinance as yf
 import pandas as pd
 import numpy as np
-import yfinance as yf
-import datetime
+from datetime import datetime
 
 st.set_page_config(page_title="📊 Backtest Top 13", layout="wide")
 
