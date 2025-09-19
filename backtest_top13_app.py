@@ -31,10 +31,13 @@ names = universe["Name"].tolist() if "Name" in universe.columns else tickers
 
 st.write("Tickers:", tickers[:10], "…")
 
-@st.cache_data
 def load_data(tickers, start, end):
-    df = yf.download(tickers, start=start, end=end, progress=False)["Adj Close"]
-    return df
+    try:
+        df = yf.download(tickers, start=start, end=end, progress=False)["Adj Close"]
+        return df.dropna(how="all")
+    except Exception as e:
+        st.error(f"Fehler beim Laden der Kursdaten: {e}")
+        return pd.DataFrame()
 
 price_data = load_data(tickers, start_date, end_date)
 
