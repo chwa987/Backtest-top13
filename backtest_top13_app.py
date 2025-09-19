@@ -14,8 +14,17 @@ import datetime
 @st.cache_data
 def load_data(tickers, start_date, end_date):
     try:
-        data = yf.download(tickers, start=start_date, end=end_date, progress=False)["Adj Close"]
-        return data.dropna(how="all")
+        data = yf.download(tickers, start=start_date, end=end_date, progress=False)
+
+        # Versuche zuerst Adj Close, ansonsten Close
+        if "Adj Close" in data.columns:
+            prices = data["Adj Close"]
+        elif "Close" in data.columns:
+            prices = data["Close"]
+        else:
+            raise KeyError("Weder 'Adj Close' noch 'Close' gefunden!")
+
+        return prices.dropna(how="all")
     except Exception as e:
         st.error(f"Fehler beim Laden der Daten: {e}")
         return pd.DataFrame()
